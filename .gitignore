@@ -3,3 +3,5 @@ build/
 char_demo
 datapoint_demo
 iterator_demo
+src/async_demo.cpp
+async_demo

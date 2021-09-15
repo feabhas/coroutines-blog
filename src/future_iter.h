@@ -31,7 +31,9 @@ class Future
         Promise() = default;
         std::suspend_always initial_suspend() { return {}; }
         std::suspend_always final_suspend() noexcept { return {}; }
-        void unhandled_exception() { abort(); }
+        void unhandled_exception() { 
+            std::rethrow_exception(std::current_exception()); 
+        }
 
         std::suspend_always yield_value(T value) {
             this->value = std::move(value);
