@@ -1,5 +1,5 @@
 build/
 .vscode/
-simple
-full
-application
+char_demo
+datapoint_demo
+iterator_demo

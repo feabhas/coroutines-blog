@@ -1,12 +1,22 @@
-CFLAGS := -g -Wall -std=c++20 -fcoroutines
+CXXFLAGS := $(CXXFLAGS) -g -Wall -std=c++20 -fcoroutines
 
-OBJS := $(SOURCES:.cpp=.o)
+TARGETS := char_demo datapoint_demo iterator_demo
 
-all:
-	echo "Use 'make simple' or 'make full' to build 'application'"
+all: $(TARGETS)
+	@echo "Generated executables are:\n  $(TARGETS)\n"
+	@echo "Use the following commands to test the applications:"
+	@echo "  ./char_demo"
+	@echo "  python3 test_temp.py | ./datapoint_demo"
+	@echo "  python3 test_temp.py | ./iterator_demo"
 
-full: src/full.cpp
-	g++ $(CFLAGS) -o full src/full.cpp
+clean:
+	rm -f $(TARGETS)
+	
+iterator_demo: src/iterator_demo.cpp
+	$(CXX) $(CXXFLAGS) -o $@ $?
+	
+datapoint_demo: src/datapoint_demo.cpp
+	$(CXX) $(CXXFLAGS) -o $@ $?
 
-simple: src/simple.cpp
-	g++ $(CFLAGS) -o simple src/simple.cpp
+char_demo: src/char_demo.cpp
+	$(CXX) $(CXXFLAGS) -o $@ $?

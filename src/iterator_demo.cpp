@@ -21,8 +21,7 @@
 #include <iomanip>
 #include <iterator>
 #include <algorithm>
-#include "future.h"
-
+#include "future_iter.h"
 
 // read float co-routine
 Future<float> read_stream(std::istream& in)
@@ -40,14 +39,14 @@ Future<float> read_stream(std::istream& in)
     }
 }
 
-static constexpr float threshold{21.0};
-
 struct DataPoint
 {
     float timestamp;
     float data;
 
 };
+
+static constexpr float threshold{21.0};
 
 std::ostream& operator<<(std::ostream& out, const std::optional<DataPoint>& dp)
 {
@@ -80,21 +79,6 @@ namespace ranges = std::ranges;
 
 int main()
 {
-    // auto raw_data = read_stream(std::cin);
-    // while (auto next = raw_data.next()) {
-    //     std::cout << *next << std::endl;
-    // }
-
-    // std::cout << std::fixed << std::setprecision(2);
-    // std::cout << "Time (ms)   Data" << std::endl;
-    // auto values = read_data(std::cin);
-    // while (auto n = values.next()) {
-    //     std::cout << std::setw(8) << n->timestamp 
-    //               << std::setw(8) << n->data
-    //               << (n->data > threshold ? " ***Threshold exceeded***" : "")
-    //               << std::endl;
-    // }
-
     // std::cout << "Time (ms)   Data" << std::endl;
     // for (auto&& dp: read_data(std::cin)) {
     //     std::cout << dp << std::endl;

@@ -71,6 +71,53 @@ public:
         }
     }
 
+    struct end_iterator {};
+    end_iterator end_sentinel{};
+
+    class iterator
+    {
+    public:
+        using value_type = Promise::value_type;
+        using difference_type =  std::ptrdiff_t;
+        using iterator_category = std::input_iterator_tag;
+
+        iterator() = default;
+        iterator(Future& future) : future{&future}
+        {}
+
+        value_type operator*() const { 
+            if (future) return future->handle.promise().value;
+            return {}; 
+        }
+
+        iterator& operator++() {
+            if (future && future->handle) {
+                future->handle.resume();
+            }
+            return *this;
+        }
+
+        iterator& operator++(int) {
+            return ++(*this);
+        }
+
+        bool operator== (const end_iterator&) const {
+            return future ? !future->handle.promise().value : true;
+        }
+
+    private:
+        Future* future{};
+    };
+    
+    iterator begin() {
+        auto it = iterator{*this};
+        return ++it;
+    }
+
+    end_iterator end() {
+        return end_sentinel;
+    }
+
 private:
     std::coroutine_handle<Promise> handle;    
 };
