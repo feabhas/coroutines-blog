@@ -19,14 +19,15 @@
 #include <coroutine>
 #include <optional>
 #include <cstddef>
+#include <iterator>
 
 template <typename T>
 class Future
 {
-    struct Promise
+    class Promise
     {
+    public:
         using value_type = std::optional<T>;
-        value_type value{};
 
         Promise() = default;
         std::suspend_always initial_suspend() { return {}; }
@@ -49,6 +50,13 @@ class Future
         }
 
         inline Future get_return_object();
+        
+        value_type get_value() {
+            return value;
+        }
+        
+    private:
+        value_type value{};
     };
 
 public:
@@ -66,7 +74,7 @@ public:
     Promise::value_type next() {
         if (handle) {
             handle.resume();
-            return handle.promise().value;
+            return handle.promise().get_value();
         }
         else {
             return {};
@@ -88,7 +96,7 @@ public:
         {}
 
         value_type operator*() const { 
-            if (future) return future->handle.promise().value;
+            if (future) return future->handle.promise().get_value();
             return {}; 
         }
 
@@ -104,7 +112,7 @@ public:
         }
 
         bool operator== (const end_iterator&) const {
-            return future ? !future->handle.promise().value : true;
+            return future ? !future->handle.promise().get_value() : true;
         }
 
     private:
