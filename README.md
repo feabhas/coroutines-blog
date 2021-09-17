@@ -17,6 +17,8 @@ $ python3 test_temp.py | ./datapoint_demo
 $ python3 test_temp.py | ./iterator_demost_temp.py | ./full
 ```
 
+Alternatively use `./build.sh` to use `cmake` to build the targets in `build\debug`.
+
 # Using gcc
 
 Coroutine support is available in gcc-10 onwards but requires the 
