@@ -51,7 +51,7 @@ class Future
         inline Future get_return_object();
 
         value_type get_value() {
-            return value;
+            return std::move(value);
         }
 
     private:

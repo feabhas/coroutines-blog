@@ -7,14 +7,12 @@ Build the demos using `make`. Remove generated executables with `make clean`.
 Generated executables are:
    * char_demo 
    * datapoint_demo 
-   * iterator_demo
 
 Use the following commands to test the applications:
 
 ```
 $ ./char_demo
 $ python3 test_temp.py | ./datapoint_demo
-$ python3 test_temp.py | ./iterator_demost_temp.py | ./full
 ```
 
 Alternatively use `./build.sh` to use `cmake` to build the targets in `build\debug`.
