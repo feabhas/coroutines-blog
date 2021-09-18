@@ -32,7 +32,7 @@ class Future
         std::suspend_always initial_suspend() { return {}; }
         std::suspend_always final_suspend() noexcept { return {}; }
         void unhandled_exception() { 
-            std::rethrow_exception(std::current_exception()); 
+            std::rethrow_exception(std::move(std::current_exception()));
         }
 
         std::suspend_always yield_value(T value) {

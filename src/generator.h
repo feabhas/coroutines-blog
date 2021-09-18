@@ -22,7 +22,7 @@
 #include <iterator>
 
 template <typename T>
-class Future
+class Generator
 {
     class Promise
     {
@@ -33,7 +33,7 @@ class Future
         std::suspend_always initial_suspend() { return {}; }
         std::suspend_always final_suspend() noexcept { return {}; }
         void unhandled_exception() { 
-            std::rethrow_exception(std::current_exception()); 
+            std::rethrow_exception(std::move(std::current_exception())); 
         }
 
         std::suspend_always yield_value(T value) {
@@ -49,7 +49,7 @@ class Future
             this->value = std::nullopt;
         }
 
-        inline Future get_return_object();
+        inline Generator get_return_object();
         
         value_type get_value() {
             return value;
@@ -63,11 +63,11 @@ public:
     using value_type = T;
     using promise_type = Promise;
 
-    explicit Future(std::coroutine_handle<Promise> handle)
+    explicit Generator(std::coroutine_handle<Promise> handle)
         : handle (handle) 
     {}
 
-    ~Future() {
+    ~Generator() {
         if (handle) { handle.destroy(); }
     }
    
@@ -92,17 +92,17 @@ public:
         using iterator_category = std::input_iterator_tag;
 
         iterator() = default;
-        iterator(Future& future) : future{&future}
+        iterator(Generator& generator) : generator{&generator}
         {}
 
         value_type operator*() const { 
-            if (future) return future->handle.promise().get_value();
+            if (generator) return generator->handle.promise().get_value();
             return {}; 
         }
 
         iterator& operator++() {
-            if (future && future->handle) {
-                future->handle.resume();
+            if (generator && generator->handle) {
+                generator->handle.resume();
             }
             return *this;
         }
@@ -112,11 +112,11 @@ public:
         }
 
         bool operator== (const end_iterator&) const {
-            return future ? !future->handle.promise().get_value() : true;
+            return generator ? !generator->handle.promise().get_value() : true;
         }
 
     private:
-        Future* future{};
+        Generator* generator{};
     };
     
     iterator begin() {
@@ -134,7 +134,7 @@ private:
 
 
 template <typename T>
-inline Future<T> Future<T>::Promise::get_return_object()
+inline Generator<T> Generator<T>::Promise::get_return_object()
 {
-    return Future{ std::coroutine_handle<Promise>::from_promise(*this) };
+    return Generator{ std::coroutine_handle<Promise>::from_promise(*this) };
 }

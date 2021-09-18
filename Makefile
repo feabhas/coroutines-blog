@@ -12,10 +12,10 @@ all: $(TARGETS)
 clean:
 	rm -f $(TARGETS)
 	
-iterator_demo: src/iterator_demo.cpp
+iterator_demo: src/iterator_demo.cpp src/generator.h
 	$(CXX) $(CXXFLAGS) -o $@ $?
 	
-datapoint_demo: src/datapoint_demo.cpp
+datapoint_demo: src/datapoint_demo.cpp src/future.h
 	$(CXX) $(CXXFLAGS) -o $@ $?
 
 char_demo: src/char_demo.cpp

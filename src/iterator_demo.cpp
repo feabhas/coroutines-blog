@@ -21,10 +21,10 @@
 #include <iomanip>
 #include <iterator>
 #include <algorithm>
-#include "future_iter.h"
+#include "generator.h"
 
 // read float co-routine
-Future<float> read_stream(std::istream& in)
+Generator<float> read_stream(std::istream& in)
 {
     uint32_t data;
     int count{};
@@ -60,7 +60,7 @@ std::ostream& operator<<(std::ostream& out, const std::optional<DataPoint>& dp)
 }
 
 // read struct coroutine
-Future<DataPoint> read_data(std::istream& in)
+Generator<DataPoint> read_data(std::istream& in)
 {
     std::optional<float> first{};
     auto raw_data = read_stream(in);
