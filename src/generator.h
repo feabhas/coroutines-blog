@@ -19,9 +19,10 @@
 #include <coroutine>
 #include <optional>
 #include <cstddef>
+#include <iterator>
 
 template <typename T>
-class Future
+class Generator
 {
     class Promise
     {
@@ -48,8 +49,8 @@ class Future
             this->value = std::nullopt;
         }
 
-        inline Future get_return_object();
-
+        inline Generator get_return_object();
+        
         value_type get_value() {
             return std::move(value);
         }
@@ -66,11 +67,11 @@ public:
     using value_type = T;
     using promise_type = Promise;
 
-    explicit Future(std::coroutine_handle<Promise> handle)
+    explicit Generator(std::coroutine_handle<Promise> handle)
         : handle (handle) 
     {}
 
-    ~Future() {
+    ~Generator() {
         if (handle) { handle.destroy(); }
     }
    
@@ -84,13 +85,62 @@ public:
         }
     }
 
+    struct end_iterator {};
+
+    class iterator
+    {
+    public:
+        using value_type = Promise::value_type;
+        using difference_type =  std::ptrdiff_t;
+        using iterator_category = std::input_iterator_tag;
+
+        iterator() = default;
+        iterator(Generator& generator) : generator{&generator}
+        {}
+
+        value_type operator*() const { 
+            if (generator) {
+                return generator->handle.promise().get_value();
+            }
+            return {}; 
+        }
+
+        iterator& operator++() {
+            if (generator && generator->handle) {
+                generator->handle.resume();
+            }
+            return *this;
+        }
+
+        iterator& operator++(int) {
+            return ++(*this);
+        }
+
+        bool operator== (const end_iterator&) const {
+            return generator ? generator->handle.promise().finished() : true;
+        }
+
+    private:
+        Generator* generator{};
+    };
+    
+    iterator begin() {
+        auto it = iterator{*this};
+        return ++it;
+    }
+
+    end_iterator end() {
+        return end_sentinel;
+    }
+
 private:
+    end_iterator end_sentinel{};
     std::coroutine_handle<Promise> handle;    
 };
 
 
 template <typename T>
-inline Future<T> Future<T>::Promise::get_return_object()
+inline Generator<T> Generator<T>::Promise::get_return_object()
 {
-    return Future{ std::coroutine_handle<Promise>::from_promise(*this) };
+    return Generator{ std::coroutine_handle<Promise>::from_promise(*this) };
 }

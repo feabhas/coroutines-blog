@@ -27,4 +27,5 @@ add_compile_definitions(
 
 add_executable(char_demo src/char_demo.cpp)
 add_executable(datapoint_demo src/datapoint_demo.cpp)
-
+add_executable(iterator_demo src/iterator_demo.cpp)
+add_executable(iterator_move_demo src/iterator_move_demo.cpp)
