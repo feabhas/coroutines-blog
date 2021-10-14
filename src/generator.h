@@ -120,7 +120,10 @@ public:
         }
 
         iterator& operator++(int) {
-            return ++(*this);
+            if (generator && generator->handle) {
+                generator->handle.resume();
+            }
+            return *this;
         }
 
         bool operator== (const end_iterator&) const {
@@ -132,7 +135,7 @@ public:
     };
     
     iterator begin() {
-        auto it = iterator{*this};
+        iterator it{*this};
         return ++it;
     }
 
