@@ -88,6 +88,12 @@ int main()
     //     std::cout << *it << std::endl;
     // }
 
+    // auto stream = read_data(std::cin);
+    // std::cout << "Time (ms)   Data" << std::endl;
+    // for (auto it = stream.begin(); it != stream.end(); ++it) {
+    //     std::cout << it->data << std::endl;
+    // }
+
     auto stream = read_data(std::cin);
     std::cout << "Time (ms)   Data" << std::endl;
     std::ranges::copy(stream.begin(), stream.end(), 

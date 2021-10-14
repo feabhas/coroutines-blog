@@ -105,6 +105,13 @@ public:
             return {}; 
         }
 
+        value_type operator->() const { 
+            if (generator) {
+                return generator->handle.promise().get_value();
+            }
+            return {}; 
+        }
+
         iterator& operator++() {
             if (generator && generator->handle) {
                 generator->handle.resume();

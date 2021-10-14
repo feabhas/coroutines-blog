@@ -3,5 +3,6 @@ build/
 char_demo
 datapoint_demo
 iterator_demo
+iterator_move_demo
 future
 future_iter
