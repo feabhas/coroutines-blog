@@ -30,7 +30,7 @@ Generator<float> read_stream(std::istream& in)
     int count{};
     char byte;
     while (in.get(byte)) {
-        data = data << 8 | byte;
+        data = data << 8 | static_cast<unsigned char>(byte);
         if (++count == 4) {
             co_yield *reinterpret_cast<float*>(&data);
             data = 0;
