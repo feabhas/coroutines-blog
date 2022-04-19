@@ -15,6 +15,9 @@
 // loss was sustained from, or arose out of, the results of, the item, or any
 // services that may be provided by Feabhas.
 // -----------------------------------------------------------------------------
+#pragma once
+#ifndef FUTURE_H_
+#define FUTURE_H_
 
 #include <coroutine>
 #include <optional>
@@ -94,3 +97,5 @@ inline Future<T> Future<T>::Promise::get_return_object()
 {
     return Future{ std::coroutine_handle<Promise>::from_promise(*this) };
 }
+
+#endif
